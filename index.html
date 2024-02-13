@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel='stylesheet' href='style.css'>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Todo List</h1>
+        <input type='text' class='input' placeholder=''>
+        <button class="add">+</button>
+        <span>'enter'로도 입력됩니다.</span>
+        <div class="tabs">
+            <div class="shadow"></div>
+            <ul id="tabs">
+                <li class="tab" id="all">모두</li>
+                <li class="tab" id="ongoing">진행중</li>
+                <li class="tab" id="done">끝남</li>
+            </ul>
+        </div>
+        <section class="task-board">
+
+        </section>
+
+        <section class="debug">
+            <h3>디버그용</h3>
+            <div id="todo-list"></div>
+            <div id="ongoing-list"></div>
+            <div id="done-list"></div>
+        </section>
+    </div>
+
+
+    <script src='main.js'></script>
+</body>
+
+</html>

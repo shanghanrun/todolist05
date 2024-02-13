@@ -1,0 +1,59 @@
+body {
+    /* margin:0 */
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.tabs {
+    position: relative;
+}
+
+.shadow {
+    position: absolute;
+    width: 3px;
+    height: 5px;
+    background: rgb(77, 89, 251, 0.8);
+    z-index: -1;
+
+    border-top-right-radius: 10px;
+}
+
+#tabs {
+    display: flex;
+}
+
+#tabs li {
+    padding: 10px 10px;
+    border-top: 1px solid black;
+    /* border-bottom: 1px solid black; */
+    border-left: 1px solid black;
+    border-top-right-radius: 10px;
+}
+
+#tabs li:last-child {
+    border-right: 1px solid black;
+}
+
+.todos {
+    border: 1px solid blue;
+
+}
+
+
+
+.debug {
+    margin-top: 10px;
+    border: 1px solid red;
+}
+
+.debug h3 {
+    margin-left: 10px;
+}
+
+.debug div {
+    margin: 10px;
+}
