@@ -14,7 +14,8 @@ function indicator(e){
     shadow.style.width = e.target.offsetWidth + 'px';
 
     shadow.style.height = e.target.offsetHeight + 'px';
-    
+    shadow.style.borderTopRightRadius = '10px';
+
     mode = e.target.id
     render()
 }
@@ -35,7 +36,8 @@ input.addEventListener('keyup', function(e){
 function addToList(){
     const inputValue = input.value.trim();  
     const uid = Math.random().toString(36).substring(2,18);  
-    const item = {id: uid, value: inputValue, isDone: false }
+    const item = {id: uid, value: inputValue, isCompleted: false, createdAt: today() }
+    console.log(item)
     // 중복값 못들어가게 
     const i = todoList.findIndex(todo => todo.value == inputValue);
     if( inputValue !=''){
@@ -81,37 +83,34 @@ function render(){
     }
 
     let resultHTML =''
-    const taskBoard = document.querySelector('.task-board')
-    
+    const todoUl = document.querySelector('.todo')
+    console.log(todoUl)
     list.forEach( item => {
         if(item.isCompleted == false){
             resultHTML += `
-                <ul class='todo'>
-                    <li class="undone">
+                    <li class="undone" ondblclick="deleteTodo('${item.id}')" draggable="true">
                         <span>${item.value}</span>
                         <div>
-                            <button onclick='checkTodo('${item.id}')'><i class="fa-solid fa-check"></i></button>
-                            <button onclick='deleteTodo('${item.id}')'><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="checkTodo('${item.id}')"><i class="fa-solid fa-check"></i></button>
+                            <button onclick="deleteTodo('${item.id}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
+                        <span class='date'>${item.createdAt}</span>
                     </li>
-                </ul>
             `
         } else {
             resultHTML += `
-                <ul class='todo'>
-                    <li class="done">
+                    <li class="done" ondblclick="deleteTodo('${item.id}')" draggable="true">
                         <span>${item.value}</span>
                         <div>
                             <button onclick="checkTodo('${item.id}')"><i class="fa-solid fa-rotate-left"></i></button>
                             <button onclick="deleteTodo('${item.id}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
+                        <span class='date'>${item.createdAt}</span>
                     </li>
-                </ul>
             `
         }       
     })
-
-    taskBoard.innerHTML = resultHTML;
+    todoUl.innerHTML = resultHTML;
     showDebug()
 }
 
@@ -132,3 +131,18 @@ function deleteTodo(checkedId){
     render();
 }
 
+
+function today(){
+    // 현재 날짜와 시간을 가져옵니다.
+    const now = new Date();
+
+    // 원하는 형식으로 날짜를 포맷합니다.
+    const year = now.getFullYear(); // 연도를 가져옵니다.
+    const month = String(now.getMonth() + 1).padStart(2, '0'); 
+    // 월을 가져오고 0을 붙여 두 자리로 만듭니다.
+    const day = String(now.getDate()).padStart(2, '0'); // 일을 가져오고 0을 붙여 두 자리로 만듭니다.
+
+    // 날짜를 원하는 형식으로 조합합니다.
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate
+}
