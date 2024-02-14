@@ -38,12 +38,26 @@ ul {
     border-right: 1px solid black;
 }
 
-.todos {
+.task-board {
     border: 1px solid blue;
 
 }
 
+.todo li {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid gray;
+}
 
+.undone {
+    background: #b9d4c3;
+    color: black
+}
+
+.done {
+    background: lightgray;
+    color: gray;
+}
 
 .debug {
     margin-top: 10px;

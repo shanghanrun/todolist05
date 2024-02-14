@@ -2,17 +2,21 @@ const debugTodoList = document.querySelector('#todo-list')
 const debugOngoingList = document.querySelector('#ongoing-list')
 const debugDoneList = document.querySelector('#done-list')
 
+let mode ='all'
 const shadow = document.querySelector('.shadow')
 const tabs = document.querySelectorAll('.tab')
 tabs.forEach(tab => tab.addEventListener('click', indicator))
-tabs.forEach(tab => addEventListener('click', render))
+// tabs.forEach(tab => tab.addEventListener('click', render))
 
 function indicator(e){
     shadow.style.left = e.target.offsetLeft +'px';
     shadow.style.top = e.target.offsetTop + 'px';
     shadow.style.width = e.target.offsetWidth + 'px';
 
-    shadow.style.height = e.target.offsetHeight + 'px'; 
+    shadow.style.height = e.target.offsetHeight + 'px';
+    
+    mode = e.target.id
+    render()
 }
 
 const addButton = document.querySelector('.add')
@@ -20,9 +24,6 @@ const input = document.querySelector('.input')
 let todoList =[]
 let ongoingList=[]
 let doneList =[]
-
-
-
 
 addButton.addEventListener('click', addToList)
 input.addEventListener('keyup', function(e){
@@ -32,19 +33,21 @@ input.addEventListener('keyup', function(e){
 })
 
 function addToList(){
-    const inputValue = input.value.trim();   
-    const item = {value: inputValue, status: 'ongoing' }
+    const inputValue = input.value.trim();  
+    const uid = Math.random().toString(36).substring(2,18);  
+    const item = {id: uid, value: inputValue, isDone: false }
     // 중복값 못들어가게 
     const i = todoList.findIndex(todo => todo.value == inputValue);
     if( inputValue !=''){
         //빈문자열은 걸러내고,
         // 이미 들어 있지 않은 일만 추가
+        // 객체는 참조형 자료라서, 독립된 새로운 값으로 각기 다른 리스트에 넣는다.
         if(i == -1){
             todoList.push(item)
             ongoingList.push({...item}) // 독립되게
             console.log(todoList)
             input.value =''
-            renderTodoList()
+            render()
             
         }
     }
@@ -55,6 +58,8 @@ function addToList(){
 }
 
 function showDebug(){
+    ongoingList = todoList.filter(item => item.isCompleted ==false)
+    doneList = todoList.filter(item => item.isCompleted ==true)
     debugTodoList.innerHTML=''
     debugOngoingList.innerHTML=''
     debugDoneList.innerHTML=''
@@ -65,150 +70,65 @@ function showDebug(){
 
 
 
-function renderTodoList(){
+function render(){
+    let list;
+    if(mode =='all'){
+        list = todoList;
+    } else if (mode == 'ongoing'){
+        list = todoList.filter(item => item.isCompleted == false)
+    } else if (mode =='done'){
+        list = todoList.filter(item => item.isCompleted == true)
+    }
+
     let resultHTML =''
     const taskBoard = document.querySelector('.task-board')
-    taskBoard.innerHTML = resultHTML;
-
-    todoList.forEach( item => {
-        const li = document.createElement('li')
-        const span = document.createElement('span') 
-        li.classList.add('todo')
-        li.classList.add(item.status)
-        li.setAttribute('data-key', item.value)
-         //나중에 getAttribute('data-key')로 받는다.
-         // 혹은 li.key?
-        span.innerText = item.value
-
-        const div = document.createElement('div')   
-        const doneButton = document.createElement('button')
-        doneButton.innerHTML = '완료'
-        doneButton.addEventListener('click', checkTodo)
-            
-        const deleteButton = document.createElement('button')
-        deleteButton.innerHTML='삭제'
-        deleteButton.addEventListener('click', deleteTodo)
-
-        div.appendChild(doneButton)
-        div.appendChild(deleteButton)
-
-        li.appendChild(span)
-        li.appendChild(div)
-        li.style.display = 'flex';
-        li.style.justifyContent = 'space-between'
-        li.style.borderBottom = '1px solid gray';
-        if (item.status == 'ongoing'){
-            li.style.background ='#b9d4c3'
-            li.style.color = 'black'
-        } else{
-            li.style.background ='lightgray'
-            li.style.color = 'gray'
-        }        
     
-        todoUl.appendChild(li)
-    })
-
-    showDebug()
-}
-
-function checkTodo(event){
-    const button = event.target;
-    const div = button.parentNode;
-    const li = div.parentNode;
-    const span = li.firstChild
-    const value = span.textContent;
-    // const key = li.getAttribute('data-key')
-    const key = li.dataset.key
-    console.log('value: ', value)
-    console.log('key :', key)
-    const itemIndex = todoList.findIndex( item => item.value == value)
-    const item = todoList.find(item => item.value == value)
-    console.log('itemIndex: ',itemIndex)
-    console.log(todoList[itemIndex])
-
-    todoList[itemIndex].status ='done'
-    
-    // ongoingList에서 해당 item을 삭제한다.
-    ongoingList = ongoingList.filter(item => item.value != value)
-    console.log('ongoingList :', ongoingList)
-    // doneList에 해당 item을 추가한다.
-    doneList = [...doneList, {value: value, status: 'done'}]
-    console.log('doneList :', doneList)
-        
-
-    // renderTodoList();
-    // 바로 다시 랜더하면 화면이 지워진다.
-    //그리고 사실 다시 랜더할 필요없이, 아래 사항만 바뀌면 된다.
-    if (item.status == 'ongoing'){
-            li.style.background ='#b9d4c3'
-            li.style.color = 'black'
-        } else{
-            li.style.background ='lightgray'
-            li.style.color = 'gray'
-        }    
-
-    showDebug()
-
-}
-
-
-function deleteTodo(event){
-    const button = event.target;
-    const div = button.parentNode;
-    const li = div.parentNode;
-    const span = li.firstChild
-    const value = span.textContent;
-    const key = li.getAttribute('data-key')
-    
-    ongoingList = ongoingList.filter(item => item.value != value)
-    doneList = doneList.filter(item => item.value != value)
-    todoList = todoList.filter(item => item.value != value)
-
-    renderTodoList();
-    showDebug()
-
-}
-
-function render(event){
-    const tab = event.target
-    if (tab.id =='all'){
-        renderTodoList()
-    } else{
-        renderOtherList(tab.id)
-    }
-}
-
-
-function renderOtherList(id){
-    let list =[]
-    if (id == 'ongoing'){
-        list = ongoingList
-    }
-    if (id =='done'){
-        list = doneList
-    }
-
-    todoUl.innerHTML ='';
-
     list.forEach( item => {
-        const li = document.createElement('li')
-        const span = document.createElement('span') 
-        span.innerText = item.value
-
-        li.appendChild(span)
-        if (item.status == 'ongoing'){
-            li.style.background ='#b9d4c3'
-            li.style.color = 'black'
-        } else{
-            li.style.background ='lightgray'
-            li.style.color = 'gray'
-        }        
-    
-        todoUl.appendChild(li)
+        if(item.isCompleted == false){
+            resultHTML += `
+                <ul class='todo'>
+                    <li class="undone">
+                        <span>${item.value}</span>
+                        <div>
+                            <button onclick='checkTodo('${item.id}')'><i class="fa-solid fa-check"></i></button>
+                            <button onclick='deleteTodo('${item.id}')'><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </li>
+                </ul>
+            `
+        } else {
+            resultHTML += `
+                <ul class='todo'>
+                    <li class="done">
+                        <span>${item.value}</span>
+                        <div>
+                            <button onclick="checkTodo('${item.id}')"><i class="fa-solid fa-rotate-left"></i></button>
+                            <button onclick="deleteTodo('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </li>
+                </ul>
+            `
+        }       
     })
 
+    taskBoard.innerHTML = resultHTML;
     showDebug()
 }
 
+function checkTodo(checkedId){
+    let checkedItem;
+    todoList.forEach(item => {
+        if(item.id == checkedId){
+            item.isCompleted = !item.isCompleted; 
+        }
+    })
+    render();
+}
 
-/// 완료를 누를 때, 리스트 목록이 삭제되는 문제 해겷해야 된다.
+
+function deleteTodo(checkedId){
+    todoList = todoList.filter(item => item.id != checkedId)
+
+    render();
+}
+
