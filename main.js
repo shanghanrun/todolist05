@@ -170,15 +170,19 @@ function editTodo(checkedId){
 }
 
 
+// 진행중에는 삭제 하지 않는 기능 추가
 function deleteTodo(checkedId){
     const item = todoList.find(item => item.id == checkedId)
     // todoList에서 지우기 전에, item을 먼저 찾아야 찾아진다.
-    todoList = todoList.filter(item => item.id != checkedId)
+    if (item.isCompleted){
+        todoList = todoList.filter(item => item.id != checkedId)
+        console.log(item)
+        trashList.push({...item})
     
-    console.log(item)
-    trashList.push({...item})
-
-    render();
+        render();
+    } else{
+        return;
+    }
 }
 
 
