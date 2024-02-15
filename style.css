@@ -176,6 +176,12 @@ button {
         padding: 5px;
     }
 
+    .value {
+        position: absolute;
+        top: 45px;
+        left: 30px;
+    }
+
     /* 아래는 설정해도 이상하게 변화 안된다. */
     /* canvas {
         width: 100px;
