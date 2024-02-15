@@ -78,6 +78,7 @@ ul {
 .debug {
     margin-top: 10px;
     border: 1px solid red;
+    word-wrap: break-word;
 }
 
 
@@ -156,4 +157,11 @@ button {
 .canvas-container {
     width: 400px;
     height: 400px;
+}
+
+
+@media (max-width: 885px) {
+    .tip {
+        display: block;
+    }
 }
