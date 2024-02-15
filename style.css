@@ -152,3 +152,8 @@ button {
     bottom: 10px;
     color: gray;
 }
+
+.canvas-container {
+    width: 400px;
+    height: 400px;
+}

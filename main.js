@@ -1,3 +1,4 @@
+
 const debugTodoList = document.querySelector('#todo-list')
 const debugOngoingList = document.querySelector('#ongoing-list')
 const debugDoneList = document.querySelector('#done-list')
@@ -7,6 +8,8 @@ const shadow = document.querySelector('.shadow')
 const tabs = document.querySelectorAll('.tab')
 tabs.forEach(tab => tab.addEventListener('click', indicator))
 // tabs.forEach(tab => tab.addEventListener('click', render))
+
+let myChart = null;
 
 function indicator(e){
     shadow.style.left = e.target.offsetLeft +'px';
@@ -117,6 +120,7 @@ function render(){
     })
     todoUl.innerHTML = resultHTML;
     showDebug()
+    checkProgress()
 }
 
 function checkTodo(checkedId){
@@ -202,3 +206,60 @@ function handleDrop(event){
     console.log('checkedId: ', checkedId)
     deleteTodo(checkedId)
 }
+
+function checkProgress(){
+    // 할 일 목록과 완료된 항목의 수 가져오기
+    const totalTasks = todoList.length;
+    const completedTasks = doneList.length;
+    const ongoingTasks = totalTasks - completedTasks;
+    console.log('completedTasks: ',completedTasks)
+    console.log('ongoingTasks: ',ongoingTasks)
+
+    if(myChart){
+        myChart.destroy();
+    }
+
+    // 파이그래프 데이터
+    const data = {
+        labels: ['완료', '진행중'],
+        datasets: [{
+            label: '할 일 진행 상황',
+            data: [completedTasks, ongoingTasks],
+            backgroundColor: [
+                'rgba(85, 124, 254, 0.7)', // 완료 항목의 색상
+                'rgb(76, 248, 139, 0.7)'// 진행중 항목의 색상
+            ],
+            // borderColor: [
+                // 'black',
+                // 'black'
+            // ],
+            borderWidth: 1,
+            // boxShadow: ['5px', '5px', '10px', 'rgba(0, 0, 0, 0.5)']
+        }]
+    };
+
+    
+    // 파이그래프 설정
+    const config = {
+        type: 'pie',
+        data: data,
+        options:{
+            responsive:true,
+            maintainAspectRatio: false
+        }
+    };
+    // 파이그래프 생성
+    myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas = document.getElementById('myChart');
+        const container = document.querySelector('.canvas-container');
+
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+    });
+}
+

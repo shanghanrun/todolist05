@@ -14,6 +14,8 @@
         <input type='text' class='input' placeholder='할 일을 입력하세요'>
         <button class="add">+</button>
         <span>'enter'입력. 더블클릭(삭제). 드래그->휴지통(삭제)</span>
+
+
         <div class="tabs">
             <div class="shadow"></div>
             <ul id="tabs">
@@ -29,6 +31,10 @@
             </ul>
         </section>
 
+        <div class="canvas-contaienr">
+            <canvas id="myChart" width="200" height="200"></canvas>
+        </div>
+
         <section class="debug">
             <h3>디버그용</h3>
             <div id="todo-list"></div>
@@ -37,6 +43,7 @@
         </section>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://kit.fontawesome.com/621270f1c9.js" crossorigin="anonymous"></script>
     <script src='main.js'></script>
 </body>
