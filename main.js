@@ -11,18 +11,6 @@ tabs.forEach(tab => tab.addEventListener('click', indicator))
 
 let myChart = null;
 
-function indicator(e){
-    shadow.style.left = e.target.offsetLeft +'px';
-    shadow.style.top = e.target.offsetTop + 'px';
-    shadow.style.width = e.target.offsetWidth + 'px';
-
-    shadow.style.height = e.target.offsetHeight + 'px';
-    shadow.style.borderTopRightRadius = '10px';
-
-    mode = e.target.id
-    render()
-}
-
 const addButton = document.querySelector('.add')
 const input = document.querySelector('.input')
 let todoList =[]
@@ -36,6 +24,18 @@ input.addEventListener('keyup', function(e){
         addToList()
     }
 })
+
+function indicator(e){
+    shadow.style.left = e.target.offsetLeft +'px';
+    shadow.style.top = e.target.offsetTop + 'px';
+    shadow.style.width = e.target.offsetWidth + 'px';
+
+    shadow.style.height = e.target.offsetHeight + 'px';
+    shadow.style.borderTopRightRadius = '10px';
+
+    mode = e.target.id
+    render()
+}
 
 function addToList(){
     const inputValue = input.value.trim();  
@@ -315,4 +315,15 @@ function renderTrash(){
     todoUl.innerHTML = resultHTML;
     showDebug()
     checkProgress()
+}
+
+
+// reset
+function reset(){
+    todoList =[]
+    ongoingList=[]
+    doneList =[]
+    trashList=[]
+
+    render()
 }
