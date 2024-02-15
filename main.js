@@ -276,7 +276,7 @@ function renderTrash(){
     list.forEach( item => {
         if(item.isCompleted == false){
             resultHTML += `
-                    <li class="undone" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
+                    <li disabled="true" class="undone" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
                         <span class="value">${item.value}</span>
                         <div class="icon">
                             <button disabled="true" onclick="checkTodo('${item.id}')"><i class="fa-solid fa-check"></i></button>
@@ -288,7 +288,7 @@ function renderTrash(){
             `
         } else {
             resultHTML += `
-                    <li class="done" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
+                    <li disabled="true" class="done" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
                         <span class="value">${item.value}</span>
                         <div class="icon">
                             <button disabled="true" onclick="checkTodo('${item.id}')"><i class="fa-solid fa-rotate-left"></i></button>
