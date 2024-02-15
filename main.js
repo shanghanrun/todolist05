@@ -134,39 +134,46 @@ function checkTodo(checkedId){
     render();
 }
 
+// 끝난 아이템은 수정 불가
 function editTodo(checkedId){
     const item = todoList.find(item => item.id == checkedId)
     const prevValue = item.value;
     const itemIndex = todoList.findIndex(item => item.id == checkedId)
-    let newValue = prompt(`기존 할일은 "${prevValue}"입니다.\n새로운 일을 입력하세요.`)
-
-    // 사용자가 값을 입력하지 않거나 취소를 누른 경우 처리
-    newValue = newValue.trim()
-    if (newValue == null || newValue == '') {
-        // 입력이 취소되었거나 공백 문자열이면 아무것도 하지 않음
-        alert('입력문자가 없습니다.')
+    
+    if(!item.isCompleted){
+        let newValue = prompt(`기존 할일은 "${prevValue}"입니다.\n새로운 일을 입력하세요.`)
+    
+        // 사용자가 값을 입력하지 않거나 취소를 누른 경우 처리
+        newValue = newValue.trim()
+        if (newValue == null || newValue == '') {
+            // 입력이 취소되었거나 공백 문자열이면 아무것도 하지 않음
+            alert('입력문자가 없습니다.')
+            return;
+        }
+        // 이미 있는 할일과 동일한 할일이 입력된 경우
+        let i = todoList.findIndex(item => item.value == newValue)
+        if( i != -1){
+            alert(`이미 있는 할 일(${newValue})이 입력되었습니다`)
+            return;
+        }
+    
+        todoList[itemIndex] = {...todoList[itemIndex], value:newValue}
+    
+        // ongoingList에서는 기존 value값을 가진 것을 찾아서, newValue로 바꾸어준다.
+        i = ongoingList.findIndex(item => item.value == prevValue)
+        if(i !=-1){
+            ongoingList[i] = {...ongoingList[i], value:newValue} //덮어쓰기가 된다.
+        }
+        i = doneList.findIndex(item => item.value == prevValue)
+        if(i != -1){
+            doneList[i] = {...doneList[i], value: newValue}
+        }
+    
+        render()
+    } else{
+        alert('이미 완료한 일은 수정불가!')
         return;
     }
-    // 이미 있는 할일과 동일한 할일이 입력된 경우
-    let i = todoList.findIndex(item => item.value == newValue)
-    if( i != -1){
-        alert(`이미 있는 할 일(${newValue})이 입력되었습니다`)
-        return;
-    }
-
-    todoList[itemIndex] = {...todoList[itemIndex], value:newValue}
-
-    // ongoingList에서는 기존 value값을 가진 것을 찾아서, newValue로 바꾸어준다.
-    i = ongoingList.findIndex(item => item.value == prevValue)
-    if(i !=-1){
-        ongoingList[i] = {...ongoingList[i], value:newValue} //덮어쓰기가 된다.
-    }
-    i = doneList.findIndex(item => item.value == prevValue)
-    if(i != -1){
-        doneList[i] = {...doneList[i], value: newValue}
-    }
-
-    render()
 }
 
 
@@ -181,6 +188,7 @@ function deleteTodo(checkedId){
     
         render();
     } else{
+        alert('진행중인 일은 삭제 불가')
         return;
     }
 }
