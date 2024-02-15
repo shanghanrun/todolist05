@@ -85,7 +85,8 @@ function render(){
     } else if (mode =='done'){
         list = todoList.filter(item => item.isCompleted == true)
     } else if (mode =='trash'){
-        list = trashList
+        renderTrash()
+        return;
     }
 
     let resultHTML =''
@@ -263,3 +264,43 @@ function checkProgress(){
     });
 }
 
+
+
+
+function renderTrash(){
+    const list = trashList;
+
+    let resultHTML =''
+    const todoUl = document.querySelector('.todo')
+    console.log(todoUl)
+    list.forEach( item => {
+        if(item.isCompleted == false){
+            resultHTML += `
+                    <li class="undone" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
+                        <span class="value">${item.value}</span>
+                        <div class="icon">
+                            <button disabled="true" onclick="checkTodo('${item.id}')"><i class="fa-solid fa-check"></i></button>
+                            <button disabled="true" onclick="editTodo('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button disabled="true" onclick="deleteTodo('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <span class='date'>${item.createdAt}</span>
+                    </li>
+            `
+        } else {
+            resultHTML += `
+                    <li class="done" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
+                        <span class="value">${item.value}</span>
+                        <div class="icon">
+                            <button disabled="true" onclick="checkTodo('${item.id}')"><i class="fa-solid fa-rotate-left"></i></button>
+                            <button disabled="true" onclick="editTodo('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button disabled="true" onclick="deleteTodo('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <span class='date'>${item.createdAt}</span>
+                    </li>
+            `
+        }       
+    })
+    todoUl.innerHTML = resultHTML;
+    showDebug()
+    checkProgress()
+}
