@@ -25,6 +25,7 @@ const input = document.querySelector('.input')
 let todoList =[]
 let ongoingList=[]
 let doneList =[]
+let trashList=[]
 
 addButton.addEventListener('click', addToList)
 input.addEventListener('keyup', function(e){
@@ -80,6 +81,8 @@ function render(){
         list = todoList.filter(item => item.isCompleted == false)
     } else if (mode =='done'){
         list = todoList.filter(item => item.isCompleted == true)
+    } else if (mode =='trash'){
+        list = trashList
     }
 
     let resultHTML =''
@@ -88,10 +91,11 @@ function render(){
     list.forEach( item => {
         if(item.isCompleted == false){
             resultHTML += `
-                    <li class="undone" ondblclick="deleteTodo('${item.id}')" draggable="true">
-                        <span>${item.value}</span>
-                        <div>
+                    <li class="undone" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
+                        <span class="value">${item.value}</span>
+                        <div class="icon">
                             <button onclick="checkTodo('${item.id}')"><i class="fa-solid fa-check"></i></button>
+                            <button onclick="editTodo('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                             <button onclick="deleteTodo('${item.id}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <span class='date'>${item.createdAt}</span>
@@ -99,10 +103,11 @@ function render(){
             `
         } else {
             resultHTML += `
-                    <li class="done" ondblclick="deleteTodo('${item.id}')" draggable="true">
-                        <span>${item.value}</span>
-                        <div>
+                    <li class="done" ondblclick="deleteTodo('${item.id}')" draggable="true" id="${item.id}" ondragstart="handleDragStart(event)">
+                        <span class="value">${item.value}</span>
+                        <div class="icon">
                             <button onclick="checkTodo('${item.id}')"><i class="fa-solid fa-rotate-left"></i></button>
+                            <button onclick="editTodo('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                             <button onclick="deleteTodo('${item.id}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <span class='date'>${item.createdAt}</span>
@@ -124,25 +129,76 @@ function checkTodo(checkedId){
     render();
 }
 
+function editTodo(checkedId){
+    const item = todoList.find(item => item.id == checkedId)
+    const prevValue = item.value;
+    const itemIndex = todoList.findIndex(item => item.id == checkedId)
+    let newValue = prompt(`기존 할일은 "${prevValue}"입니다.\n새로운 일을 입력하세요.`)
+
+    // 사용자가 값을 입력하지 않거나 취소를 누른 경우 처리
+    newValue = newValue.trim()
+    if (newValue == null || newValue == '') {
+        // 입력이 취소되었거나 공백 문자열이면 아무것도 하지 않음
+        alert('입력문자가 없습니다.')
+        return;
+    }
+    // 이미 있는 할일과 동일한 할일이 입력된 경우
+    let i = todoList.findIndex(item => item.value == newValue)
+    if( i != -1){
+        alert(`이미 있는 할 일(${newValue})이 입력되었습니다`)
+        return;
+    }
+
+    todoList[itemIndex] = {...todoList[itemIndex], value:newValue}
+
+    // ongoingList에서는 기존 value값을 가진 것을 찾아서, newValue로 바꾸어준다.
+    i = ongoingList.findIndex(item => item.value == prevValue)
+    if(i !=-1){
+        ongoingList[i] = {...ongoingList[i], value:newValue} //덮어쓰기가 된다.
+    }
+    i = doneList.findIndex(item => item.value == prevValue)
+    if(i != -1){
+        doneList[i] = {...doneList[i], value: newValue}
+    }
+
+    render()
+}
+
 
 function deleteTodo(checkedId){
+    const item = todoList.find(item => item.id == checkedId)
+    // todoList에서 지우기 전에, item을 먼저 찾아야 찾아진다.
     todoList = todoList.filter(item => item.id != checkedId)
+    
+    console.log(item)
+    trashList.push({...item})
 
     render();
 }
 
 
 function today(){
-    // 현재 날짜와 시간을 가져옵니다.
     const now = new Date();
-
-    // 원하는 형식으로 날짜를 포맷합니다.
-    const year = now.getFullYear(); // 연도를 가져옵니다.
+    const year = now.getFullYear(); 
     const month = String(now.getMonth() + 1).padStart(2, '0'); 
     // 월을 가져오고 0을 붙여 두 자리로 만듭니다.
     const day = String(now.getDate()).padStart(2, '0'); // 일을 가져오고 0을 붙여 두 자리로 만듭니다.
 
-    // 날짜를 원하는 형식으로 조합합니다.
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate
+}
+
+function handleDragStart(event) {
+    // 드래그되는 데이터 설정
+    event.dataTransfer.setData("text/plain", event.target.id);
+}
+function handleDragOver(event){
+    event.preventDefault();
+}
+
+function handleDrop(event){
+    event.preventDefault();
+    let checkedId = event.dataTransfer.getData("text/plain")
+    console.log('checkedId: ', checkedId)
+    deleteTodo(checkedId)
 }

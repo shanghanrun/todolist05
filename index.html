@@ -13,13 +13,14 @@
         <h1>Todo List</h1>
         <input type='text' class='input' placeholder='할 일을 입력하세요'>
         <button class="add">+</button>
-        <span>'enter'로도 입력됩니다. 더블클릭으로 삭제가능</span>
+        <span>'enter'입력. 더블클릭(삭제). 드래그->휴지통(삭제)</span>
         <div class="tabs">
             <div class="shadow"></div>
             <ul id="tabs">
                 <li class="tab" id="all">모두</li>
                 <li class="tab" id="ongoing">진행중</li>
                 <li class="tab" id="done">끝남</li>
+                <li class="tab" id="trash" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">휴지통</li>
             </ul>
         </div>
         <section class="task-board">
