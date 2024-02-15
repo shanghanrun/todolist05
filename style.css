@@ -167,4 +167,23 @@ button {
     .tip {
         display: block;
     }
+
+    .todo li {
+        width: 150px;
+        height: 110px;
+
+        margin: 5px;
+        padding: 5px;
+    }
+
+    /* 아래는 설정해도 이상하게 변화 안된다. */
+    /* canvas {
+        width: 100px;
+        height: 100px;
+    }
+
+    .canvas-container {
+        width: 100px;
+        height: 100px;
+    } */
 }
